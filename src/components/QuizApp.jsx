@@ -15,6 +15,7 @@ import BadgeManager from "../utils/BadgeManager";
 
 const QuizApp = () => {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     // ---------- Core Quiz State ----------
     const [questions, setQuestions] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -26,6 +27,8 @@ const QuizApp = () => {
 
     // ---------- Quiz Setup State ----------
 =======
+=======
+>>>>>>> Stashed changes
 
     // core quiz state
     const [questions, setQuestions] = useState([]);
@@ -37,6 +40,9 @@ const QuizApp = () => {
     const [score, setScore] = useState(0);
 
     // setup state
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     const [showSetup, setShowSetup] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState("");
@@ -217,6 +223,9 @@ const QuizApp = () => {
                     BookmarkManager.generateQuestionId(processedQuestion);
 
                 return processedQuestion;
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
             });
 
@@ -272,6 +281,9 @@ const QuizApp = () => {
 
     // Auto-save state periodically when quiz is active and not paused
 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
     // ---------- Auto-save every 5s ----------
@@ -288,6 +300,9 @@ const QuizApp = () => {
 
             const interval = setInterval(saveQuizState, 5000); // Save every 5 seconds
 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
             return () => clearInterval(interval);
         }
@@ -329,6 +344,7 @@ const QuizApp = () => {
 
     // ---------- Answer Selection ----------
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     const handleAnswerSelect = (selectedAnswer) => {
         const currentQuestion = questions[currentQuestionIndex];
         const isCorrect = selectedAnswer === currentQuestion?.correct_answer;
@@ -368,6 +384,27 @@ const handleAnswerSelect = (selectedAnswer) => {
         return updated;
     });
 
+=======
+
+const handleAnswerSelect = (selectedAnswer) => {
+    const currentQuestion = questions[currentQuestionIndex];
+    const isCorrect = selectedAnswer === currentQuestion?.correct_answer;
+
+    const answerData = {
+        questionIndex: currentQuestionIndex,
+        selectedAnswer,
+        correctAnswer: currentQuestion?.correct_answer ?? null,
+        isCorrect: Boolean(isCorrect),
+    };
+
+    // Update selected answers
+    setSelectedAnswers((prev) => {
+        const updated = [...prev];
+        updated[currentQuestionIndex] = answerData;
+        return updated;
+    });
+
+>>>>>>> Stashed changes
     // Update score if correct
     if (isCorrect) {
         setScore((prev) => prev + 1);
