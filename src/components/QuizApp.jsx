@@ -318,6 +318,7 @@ const QuizApp = () => {
     }, [isQuizPaused, quizCompleted, showSetup, handlePauseToggle]);
 
     // ---------- Answer Selection ----------
+<<<<<<< Updated upstream
     const handleAnswerSelect = (selectedAnswer) => {
         const currentQuestion = questions[currentQuestionIndex];
         const isCorrect = selectedAnswer === currentQuestion?.correct_answer;
