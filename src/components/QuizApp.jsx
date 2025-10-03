@@ -24,6 +24,17 @@ const QuizApp = () => {
     const [error, setError] = useState(null);
 
     // ---------- Quiz Setup State ----------
+
+    // core quiz state
+    const [questions, setQuestions] = useState([]);
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [selectedAnswers, setSelectedAnswers] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [quizCompleted, setQuizCompleted] = useState(false);
+    const [score, setScore] = useState(0);
+
+    // setup state
     const [showSetup, setShowSetup] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState("");
 
@@ -118,6 +129,12 @@ const QuizApp = () => {
         }
     }, [isQuizPaused, quizCompleted, showSetup, saveQuizState]);
 
+=======
+
+    // Handle timer updates
+    // (Removed unused handleTimerUpdate function)
+
+
     // ---------- Fetch Questions ----------
     const fetchQuestions = useCallback(async () => {
         try {
@@ -166,6 +183,33 @@ const QuizApp = () => {
                     answers: shuffled.map((a) => decodeHtmlEntities(a)),
                     id: BookmarkManager.generateQuestionId(q),
                 };
+
+            if (data.response_code !== 0) {
+                throw new Error(
+                    "No questions available for the selected options. Try changing the number/category/difficulty/type.",
+                );
+            }
+
+            // prepare questions: decode HTML and shuffle answers
+            const processedQuestions = data.results.map((question) => {
+                const answers = [
+                    ...question.incorrect_answers,
+                    question.correct_answer,
+                ];
+                const shuffledAnswers = answers.sort(() => Math.random() - 0.5);
+
+                const processedQuestion = {
+                    ...question,
+                    question: decodeHtmlEntities(question.question),
+                    correct_answer: decodeHtmlEntities(question.correct_answer),
+                    answers: shuffledAnswers.map((a) => decodeHtmlEntities(a)),
+                };
+
+                // Generate unique ID for the question
+                processedQuestion.id =
+                    BookmarkManager.generateQuestionId(processedQuestion);
+
+                return processedQuestion;
             });
 
             setQuestions(processedQuestions);
@@ -187,6 +231,38 @@ const QuizApp = () => {
         }
     }, [timerDuration, isTimerEnabled]);
 
+    }, [isTimerEnabled, timerDuration]);
+
+    // Function to handle going back to setup with proper cleanup
+    const handleBackToSetup = useCallback(() => {
+        QuizStateManager.clearQuizState();
+        setQuestions([]);
+        setCurrentQuestionIndex(0);
+        setSelectedAnswers([]);
+        setQuizCompleted(false);
+        setScore(0);
+        setError(null);
+        setIsQuizPaused(false);
+        setIsTimerPaused(false);
+        setTimeRemaining(null);
+        setQuizStartTime(null);
+        setShowSetup(true);
+    }, []);
+
+    // load questions after user finishes setup
+    useEffect(() => {
+        if (!showSetup) {
+            // Try to load saved state first
+            const hasSavedState = loadSavedQuizState();
+            if (!hasSavedState) {
+                fetchQuestions();
+            }
+        }
+    }, [showSetup, fetchQuestions, loadSavedQuizState]);
+
+    // Auto-save state periodically when quiz is active and not paused
+
+
     // ---------- Auto-save every 5s ----------
     useEffect(() => {
         if (
@@ -196,6 +272,9 @@ const QuizApp = () => {
             !showSetup
         ) {
             const interval = setInterval(saveQuizState, 5000);
+
+            const interval = setInterval(saveQuizState, 5000); // Save every 5 seconds
+
             return () => clearInterval(interval);
         }
     }, [
@@ -254,6 +333,34 @@ const QuizApp = () => {
         setIsResultAnnouncementComplete(false);
     };
 
+
+const handleAnswerSelect = (selectedAnswer) => {
+    const currentQuestion = questions[currentQuestionIndex];
+    const isCorrect = selectedAnswer === currentQuestion?.correct_answer;
+
+    const answerData = {
+        questionIndex: currentQuestionIndex,
+        selectedAnswer,
+        correctAnswer: currentQuestion?.correct_answer ?? null,
+        isCorrect: Boolean(isCorrect),
+    };
+
+    // Update selected answers
+    setSelectedAnswers((prev) => {
+        const updated = [...prev];
+        updated[currentQuestionIndex] = answerData;
+        return updated;
+    });
+
+    // Update score if correct
+    if (isCorrect) {
+        setScore((prev) => prev + 1);
+    }
+
+    // Pause timer for result announcement
+    setIsTimerPaused(true);
+};
+
     // ---------- Auto-advance after TTS ----------
     useEffect(() => {
         if (
@@ -291,6 +398,8 @@ const QuizApp = () => {
         currentQuestionIndex,
         questions.length,
         selectedAnswers,
+        quizStartTimestamp,
+        score,
     ]);
 
     // ---------- Timer callbacks ----------
@@ -299,22 +408,6 @@ const QuizApp = () => {
         console.log("Timer warning: 10 seconds remaining");
 
     const handleResultAnnounced = () => setIsResultAnnouncementComplete(true);
-
-    // ---------- Back to Setup ----------
-    const handleBackToSetup = useCallback(() => {
-        QuizStateManager.clearQuizState();
-        setQuestions([]);
-        setCurrentQuestionIndex(0);
-        setSelectedAnswers([]);
-        setQuizCompleted(false);
-        setScore(0);
-        setError(null);
-        setIsQuizPaused(false);
-        setIsTimerPaused(false);
-        setTimeRemaining(null);
-        setQuizStartTime(null);
-        setShowSetup(true);
-    }, []);
 
     // ---------- Restart Quiz ----------
     const restartQuiz = () => {
