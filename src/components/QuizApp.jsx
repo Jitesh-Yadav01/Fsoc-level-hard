@@ -175,6 +175,7 @@ const QuizApp = () => {
             if (!response.ok) throw new Error("Failed to fetch questions");
 
             const data = await response.json();
+<<<<<<< Updated upstream
             if (data.response_code !== 0)
                 throw new Error("No questions available for selected options.");
 
