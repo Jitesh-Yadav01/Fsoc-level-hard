@@ -35,6 +35,7 @@ const QuizApp = () => {
     const [score, setScore] = useState(0);
 
     // setup state
+>>>>>>> Stashed changes
     const [showSetup, setShowSetup] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState("");
 
@@ -129,6 +130,7 @@ const QuizApp = () => {
         }
     }, [isQuizPaused, quizCompleted, showSetup, saveQuizState]);
 
+<<<<<<< Updated upstream
 =======
 
     // Handle timer updates
@@ -183,6 +185,7 @@ const QuizApp = () => {
                     answers: shuffled.map((a) => decodeHtmlEntities(a)),
                     id: BookmarkManager.generateQuestionId(q),
                 };
+=======
 
             if (data.response_code !== 0) {
                 throw new Error(
@@ -210,6 +213,7 @@ const QuizApp = () => {
                     BookmarkManager.generateQuestionId(processedQuestion);
 
                 return processedQuestion;
+>>>>>>> Stashed changes
             });
 
             setQuestions(processedQuestions);
