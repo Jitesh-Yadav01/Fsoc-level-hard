@@ -14,6 +14,7 @@ import BookmarkManager from "../utils/BookmarkManager";
 import BadgeManager from "../utils/BadgeManager";
 
 const QuizApp = () => {
+<<<<<<< Updated upstream
     // ---------- Core Quiz State ----------
     const [questions, setQuestions] = useState([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -24,6 +25,7 @@ const QuizApp = () => {
     const [error, setError] = useState(null);
 
     // ---------- Quiz Setup State ----------
+=======
 
     // core quiz state
     const [questions, setQuestions] = useState([]);
@@ -137,6 +139,7 @@ const QuizApp = () => {
     // (Removed unused handleTimerUpdate function)
 
 
+>>>>>>> Stashed changes
     // ---------- Fetch Questions ----------
     const fetchQuestions = useCallback(async () => {
         try {
@@ -233,7 +236,9 @@ const QuizApp = () => {
         } finally {
             setIsLoading(false);
         }
+<<<<<<< Updated upstream
     }, [timerDuration, isTimerEnabled]);
+=======
 
     }, [isTimerEnabled, timerDuration]);
 
@@ -266,6 +271,7 @@ const QuizApp = () => {
 
     // Auto-save state periodically when quiz is active and not paused
 
+>>>>>>> Stashed changes
 
     // ---------- Auto-save every 5s ----------
     useEffect(() => {
@@ -275,10 +281,13 @@ const QuizApp = () => {
             !quizCompleted &&
             !showSetup
         ) {
+<<<<<<< Updated upstream
             const interval = setInterval(saveQuizState, 5000);
+=======
 
             const interval = setInterval(saveQuizState, 5000); // Save every 5 seconds
 
+>>>>>>> Stashed changes
             return () => clearInterval(interval);
         }
     }, [
@@ -338,6 +347,7 @@ const QuizApp = () => {
         setIsResultAnnouncementComplete(false);
     };
 
+=======
 
 const handleAnswerSelect = (selectedAnswer) => {
     const currentQuestion = questions[currentQuestionIndex];
@@ -366,6 +376,7 @@ const handleAnswerSelect = (selectedAnswer) => {
     setIsTimerPaused(true);
 };
 
+>>>>>>> Stashed changes
     // ---------- Auto-advance after TTS ----------
     useEffect(() => {
         if (
